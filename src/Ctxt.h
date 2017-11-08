@@ -252,7 +252,6 @@ class Ctxt {
 
   const FHEcontext& context; // points to the parameters of this FHE instance
   const FHEPubKey& pubKey;   // points to the public encryption key;
-  vector<CtxtPart> parts;    // the ciphertexe parts
   IndexSet primeSet; // the primes relative to which the parts are defined
   long ptxtSpace;    // plaintext space for this ciphertext (either p or p^r)
   xdouble noiseVar;  // estimating the noise variance in this ciphertext
@@ -301,6 +300,7 @@ class Ctxt {
   Ctxt& privateAssign(const Ctxt& other);
  
 public:
+  vector<CtxtPart> parts;    // the ciphertexe parts
   Ctxt(const FHEPubKey& newPubKey, long newPtxtSpace=0); // constructor
 
   Ctxt(ZeroCtxtLike_type, const Ctxt& ctxt); 
