@@ -253,8 +253,8 @@ class Ctxt {
   const FHEcontext& context; // points to the parameters of this FHE instance
   const FHEPubKey& pubKey;   // points to the public encryption key;
   
+  /* stuff went from private to public in here */
   
-  long ptxtSpace;    // plaintext space for this ciphertext (either p or p^r)
   xdouble noiseVar;  // estimating the noise variance in this ciphertext
 
   // Create a tensor product of c1,c2. It is assumed that *this,c1,c2
@@ -305,6 +305,7 @@ public:
   /* shifted by jj 8/11/2017 */
   vector<CtxtPart> parts;    // the ciphertexe parts
   IndexSet primeSet; // the primes relative to which the parts are defined
+  long ptxtSpace;    // plaintext space for this ciphertext (either p or p^r)
   /* shifted by jj 8/11/2017 */
   
   Ctxt(const FHEPubKey& newPubKey, long newPtxtSpace=0); // constructor
