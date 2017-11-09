@@ -696,7 +696,7 @@ void FHESecKey::Decrypt(ZZX& plaintxt, const Ctxt &ciphertxt,
     }
   }
   PolyRed(plaintxt, ciphertxt.ptxtSpace, true/*reduce to [0,p-1]*/);
-  cout << "print in decrypt: " << plaintext << endl;
+  cout << "print in decrypt: " << plaintxt << endl;
 }
 
 // Encryption using the secret key, this is useful, e.g., to put an
