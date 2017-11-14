@@ -74,22 +74,22 @@ bool KeySwitch::operator==(const KeySwitch& other) const
 }
 
 
-void KeySwitch::verify(FHESecKey& sk) 
+void KeySwitch::verify(FHESecKey& sk)
 {
   long fromSPower = fromKey.getPowerOfS();
   long fromXPower = fromKey.getPowerOfX();
-  long fromIdx = fromKey.getSecretKeyID(); 
+  long fromIdx = fromKey.getSecretKeyID();
   long toIdx = toKeyID;
   long p = ptxtSpace;
   long n = b.size();
 
   cout << "KeySwitch::verify\n";
-  cout << "fromS = " << fromSPower 
-       << " fromX = " << fromXPower 
-       << " fromIdx = " << fromIdx 
-       << " toIdx = " << toIdx 
-       << " p = " << p 
-       << " n = " << n 
+  cout << "fromS = " << fromSPower
+       << " fromX = " << fromXPower
+       << " fromIdx = " << fromIdx
+       << " toIdx = " << toIdx
+       << " p = " << p
+       << " n = " << n
        << "\n";
 
 
@@ -114,12 +114,12 @@ void KeySwitch::verify(FHESecKey& sk)
   IndexSet allPrimes = context.ctxtPrimes | context.specialPrimes;
 
   cout << "digits: ";
-  for (long i = 0; i < n; i++) 
+  for (long i = 0; i < n; i++)
     cout << context.digits[i] << " ";
   cout << "\n";
 
   cout << "IndexSets of b: ";
-  for (long i = 0; i < n; i++) 
+  for (long i = 0; i < n; i++)
     cout << b[i].getMap().getIndexSet() << " ";
   cout << "\n";
 
@@ -241,7 +241,7 @@ void FHEPubKey::setKeySwitchMap(long keyId)
 
   // A standard BFS implementation using a FIFO queue (complexity O(V+E))
 
-  std::queue<long> bfsQueue; 
+  std::queue<long> bfsQueue;
   bfsQueue.push(1);          // Push the target node 1 onto the BFS queue
   while (!bfsQueue.empty()) {
     long currentNode = bfsQueue.front();
@@ -263,14 +263,14 @@ void FHEPubKey::setKeySwitchMap(long keyId)
   }
 }
 
-const KeySwitch& FHEPubKey::getKeySWmatrix(const SKHandle& from, 
+const KeySwitch& FHEPubKey::getKeySWmatrix(const SKHandle& from,
 					   long toIdx) const
 {
   // First try to use the keySwitchMap
-  if (from.getPowerOfS()==1 && from.getSecretKeyID()==toIdx 
+  if (from.getPowerOfS()==1 && from.getSecretKeyID()==toIdx
                             && toIdx < (long)keySwitchMap.size()) {
     long matIdx = keySwitchMap.at(toIdx).at(from.getPowerOfX());
-    if (matIdx>=0) { 
+    if (matIdx>=0) {
       const KeySwitch& matrix = keySwitching.at(matIdx);
       if (matrix.fromKey == from) return matrix;
     }
@@ -287,7 +287,7 @@ const KeySwitch& FHEPubKey::getKeySWmatrix(const SKHandle& from,
 const KeySwitch& FHEPubKey::getAnyKeySWmatrix(const SKHandle& from) const
 {
   // First try to use the keySwitchMap
-  if (from.getPowerOfS()==1 && 
+  if (from.getPowerOfS()==1 &&
       from.getSecretKeyID() < (long)keySwitchMap.size()) {
     long matIdx = keySwitchMap.at(from.getSecretKeyID()).at(from.getPowerOfX());
     if (matIdx>=0) {
@@ -330,7 +330,7 @@ long FHEPubKey::Encrypt(Ctxt &ctxt, const ZZX& ptxt, long ptxtSpace,
     ctxt.parts[i] *= r;
 
     if (highNoise && i == 0) {
-      // we sample e so that coefficients are uniform over 
+      // we sample e so that coefficients are uniform over
       // [-Q/(8*ptxtSpace)..Q/(8*ptxtSpace)]
 
       ZZ B;
@@ -339,7 +339,7 @@ long FHEPubKey::Encrypt(Ctxt &ctxt, const ZZX& ptxt, long ptxtSpace,
       B /= 8;
       e.sampleUniform(B);
     }
-    else { 
+    else {
       e.sampleGaussian();
     }
 
@@ -361,7 +361,7 @@ long FHEPubKey::Encrypt(Ctxt &ctxt, const ZZX& ptxt, long ptxtSpace,
   ctxt.ptxtSpace = ptxtSpace;
 
   if (highNoise) {
-    // hack: we set noiseVar to Q^2/8, which is just below threshold 
+    // hack: we set noiseVar to Q^2/8, which is just below threshold
     // that will signal an error
 
     ctxt.noiseVar = xexp(2*context.logOfProduct(context.ctxtPrimes) - log(8.0));
@@ -370,16 +370,16 @@ long FHEPubKey::Encrypt(Ctxt &ctxt, const ZZX& ptxt, long ptxtSpace,
   else {
     // We have <skey,ctxt>= r*<skey,pkey> +p*(e0+e1*s) +m, where VAR(<skey,pkey>)
     // is recorded in pubEncrKey.noiseVar, VAR(ei)=sigma^2*phi(m), and VAR(s) is
-    // determined by the secret-key Hamming weight (skHwt). 
+    // determined by the secret-key Hamming weight (skHwt).
     // VAR(r)=phi(m)/2, hence the expected size squared is bounded by:
     // E(X^2) <= pubEncrKey.noiseVar *phi(m) *stdev^2
     //                               + p^2*sigma^2 *phi(m) *(skHwt+1) + p^2
-  
+
     long hwt = skHwts[0];
     xdouble phim = to_xdouble(context.zMStar.getPhiM());
     xdouble sigma2 = context.stdev * context.stdev;
     xdouble p2 = to_xdouble(ptxtSpace) * to_xdouble(ptxtSpace);
-    ctxt.noiseVar = pubEncrKey.noiseVar*phim*0.5 
+    ctxt.noiseVar = pubEncrKey.noiseVar*phim*0.5
                     + p2*sigma2*phim*(hwt+1)*context.zMStar.get_cM() + p2;
   }
   return ptxtSpace;
@@ -409,7 +409,7 @@ bool FHEPubKey::operator==(const FHEPubKey& other) const
   }
 
   if (recryptKeyID!=other.recryptKeyID) return false;
-  if (recryptKeyID>=0 && 
+  if (recryptKeyID>=0 &&
       !recryptEkey.equalsTo(other.recryptEkey, /*comparePkeys=*/false))
     return false;
 
@@ -573,7 +573,7 @@ void FHESecKey::GenKeySWmatrix(long fromSPower, long fromXPower,
   FHE_TIMER_START;
 
   // sanity checks
-  if (fromSPower<=0 || fromXPower<=0) return;  
+  if (fromSPower<=0 || fromXPower<=0) return;
   if (fromSPower==1 && fromXPower==1 && fromIdx==toIdx) return;
 
   // See if this key-switching matrix already exists in our list
@@ -596,12 +596,12 @@ void FHESecKey::GenKeySWmatrix(long fromSPower, long fromXPower,
 
   ksMatrix.b.resize(n, DoubleCRT(context)); // size-n vector
 
-  vector<DoubleCRT> a; 
+  vector<DoubleCRT> a;
   a.resize(n, DoubleCRT(context));
 
   { RandomState state;
     SetSeed(ksMatrix.prgSeed);
-    for (long i = 0; i < n; i++) 
+    for (long i = 0; i < n; i++)
       a[i].randomize();
   } // restore state upon destruction of state
 
@@ -622,7 +622,7 @@ void FHESecKey::GenKeySWmatrix(long fromSPower, long fromXPower,
   // generate the RLWE instances with pseudorandom ai's
 
   for (long i = 0; i < n; i++) {
-    RLWE1(ksMatrix.b[i], a[i], toKey, p); 
+    RLWE1(ksMatrix.b[i], a[i], toKey, p);
   }
   // Add in the multiples of the fromKey secret key
   fromKey *= context.productOfPrimes(context.specialPrimes);
@@ -674,7 +674,7 @@ void FHESecKey::Decrypt(ZZX& plaintxt, const Ctxt &ciphertxt,
     */
     long xPower = part.skHandle.getPowerOfX();
     long sPower = part.skHandle.getPowerOfS();
-    if (xPower>1) { 
+    if (xPower>1) {
       key.automorph(xPower); // s(X^t)
     }
     if (sPower>1) {
@@ -688,7 +688,7 @@ void FHESecKey::Decrypt(ZZX& plaintxt, const Ctxt &ciphertxt,
   f = plaintxt;
 
   if (ciphertxt.ptxtSpace>2) { // if p>2, multiply by Q^{-1} mod p
-    long qModP = rem(context.productOfPrimes(ciphertxt.getPrimeSet()), 
+    long qModP = rem(context.productOfPrimes(ciphertxt.getPrimeSet()),
 		     ciphertxt.ptxtSpace);
     if (qModP != 1) {
       qModP = InvMod(qModP, ciphertxt.ptxtSpace);
@@ -696,7 +696,6 @@ void FHESecKey::Decrypt(ZZX& plaintxt, const Ctxt &ciphertxt,
     }
   }
   PolyRed(plaintxt, ciphertxt.ptxtSpace, true/*reduce to [0,p-1]*/);
-  cout << "print in decrypt: " << plaintxt << endl;
 }
 
 // Encryption using the secret key, this is useful, e.g., to put an
@@ -707,7 +706,7 @@ long FHESecKey::Encrypt(Ctxt &ctxt, const ZZX& ptxt,
   FHE_TIMER_START;
   assert(((FHEPubKey*)this) == &ctxt.pubKey);
 
-  if (ptxtSpace<2) 
+  if (ptxtSpace<2)
     ptxtSpace = pubEncrKey.ptxtSpace; // default plaintext space is p^r
   assert(ptxtSpace >= 2);
 
