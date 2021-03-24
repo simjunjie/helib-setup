@@ -28,11 +28,11 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 	include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-# Download and Install GMP 6.2.0
+# Download and Install GMP
 ExternalProject_Add(
 	build-gmp
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	URL https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.lz
+	URL https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.lz # version6.2.0
 	CONFIGURE_COMMAND sh -c "./configure --prefix=<INSTALL_DIR>"
 	BUILD_IN_SOURCE 1
 )
@@ -42,11 +42,11 @@ set(GMP_ROOT_DIR "${INSTALL_DIR}" CACHE PATH "GMP Root Directory")
 set(GMP_INCLUDE_DIRS "${INSTALL_DIR}/include" CACHE PATH "GMP Include Directory")
 set(GMP_LIBRARIES "${INSTALL_DIR}/lib/libgmp.so" CACHE PATH "GMP Library Path")
 
-# Download and Install NTL 11.4.3
+# Download and Install NTL
 ExternalProject_Add(
 	build-ntl
 	DEPENDS build-gmp
-	URL https://www.shoup.net/ntl/ntl-11.4.3.tar.gz
+	URL https://www.shoup.net/ntl/ntl-11.4.3.tar.gz # version11.4.3
 	CONFIGURE_COMMAND sh -c "cd src && ./configure SHARED=on NTL_GMP_LIP=on GMP_PREFIX=${INSTALL_DIR} NTL_THREADS=on NTL_THREAD_BOOST=on NTL_ENABLE_AVX_FFT=on PREFIX=<INSTALL_DIR>"
 	BUILD_COMMAND cd src && make -j${CORES_COUNT}
 	INSTALL_COMMAND cd src && make install
@@ -58,11 +58,12 @@ set(NTL_ROOT_DIR "${INSTALL_DIR}" CACHE PATH "NTL Root Directory")
 set(NTL_INCLUDE_DIRS "${INSTALL_DIR}/include" CACHE PATH "NTL Include Directory")
 set(NTL_LIBRARIES "${INSTALL_DIR}/lib/libntl.so" CACHE PATH "NTL Library Path")
 
-# Download and Install HElib 1.2.0
+# Download and Install HElib
 ExternalProject_Add(
     build-HElib
     DEPENDS build-ntl
-    GIT_REPOSITORY https://github.com/homenc/HElib.git
+	GIT_REPOSITORY https://github.com/homenc/HElib.git
+	# GIT_TAG 060d36d4f0b125002ddb51ff9594c930382b3232 # version1.3.1
     CMAKE_ARGS -DNTL_DIR=${NTL_ROOT_DIR} -DGMP_DIR=${GMP_ROOT_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED=ON -DENABLE_THREADS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
 )
 

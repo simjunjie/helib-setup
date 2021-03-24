@@ -1,0 +1,2 @@
+add_executable(params_testing params_test.cpp)
+target_link_libraries(params_testing gtest_main NTL HElib)
