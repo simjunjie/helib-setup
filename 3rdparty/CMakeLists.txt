@@ -58,13 +58,12 @@ set(NTL_ROOT_DIR "${INSTALL_DIR}" CACHE PATH "NTL Root Directory")
 set(NTL_INCLUDE_DIRS "${INSTALL_DIR}/include" CACHE PATH "NTL Include Directory")
 set(NTL_LIBRARIES "${INSTALL_DIR}/lib/libntl.so" CACHE PATH "NTL Library Path")
 
-# Download and Install HElib
+# Download and Install HElib 2.0
 ExternalProject_Add(
     build-HElib
     DEPENDS build-ntl
-	GIT_REPOSITORY https://github.com/homenc/HElib.git
-	# GIT_TAG 060d36d4f0b125002ddb51ff9594c930382b3232 # version1.3.1
-    CMAKE_ARGS -DNTL_DIR=${NTL_ROOT_DIR} -DGMP_DIR=${GMP_ROOT_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED=ON -DENABLE_THREADS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+	GIT_REPOSITORY https://github.com/simjunjie/HElib.git
+	CMAKE_ARGS -DNTL_DIR=${NTL_ROOT_DIR} -DGMP_DIR=${GMP_ROOT_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED=ON -DENABLE_THREADS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DPEDANTIC_BUILD=OFF
 )
 
 ExternalProject_Get_Property(build-HElib INSTALL_DIR)
