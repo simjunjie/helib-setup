@@ -20,8 +20,8 @@ endif()
 
 ## Add googletest directly to our build. This defines the gtest and gtest_main targets.
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
-				 ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
-				 EXCLUDE_FROM_ALL)
+				${CMAKE_CURRENT_BINARY_DIR}/googletest-build
+				EXCLUDE_FROM_ALL)
 
 ## The gtest/gtest_main targets carry header search path dependencies automatically when using CMake 2.8.11 or later. Otherwise we have to add them here ourselves.
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
@@ -42,11 +42,11 @@ set(GMP_ROOT_DIR "${INSTALL_DIR}" CACHE PATH "GMP Root Directory")
 set(GMP_INCLUDE_DIRS "${INSTALL_DIR}/include" CACHE PATH "GMP Include Directory")
 set(GMP_LIBRARIES "${INSTALL_DIR}/lib/libgmp.so" CACHE PATH "GMP Library Path")
 
-# Download and Install NTL
+# Download and Install NTL 11.4.3
 ExternalProject_Add(
 	build-ntl
 	DEPENDS build-gmp
-	URL https://www.shoup.net/ntl/ntl-11.4.3.tar.gz # version11.4.3
+	URL https://libntl.org/ntl-11.4.3.tar.gz
 	CONFIGURE_COMMAND sh -c "cd src && ./configure SHARED=on NTL_GMP_LIP=on GMP_PREFIX=${INSTALL_DIR} NTL_THREADS=on NTL_THREAD_BOOST=on NTL_ENABLE_AVX_FFT=on PREFIX=<INSTALL_DIR>"
 	BUILD_COMMAND cd src && make -j${CORES_COUNT}
 	INSTALL_COMMAND cd src && make install
@@ -60,8 +60,8 @@ set(NTL_LIBRARIES "${INSTALL_DIR}/lib/libntl.so" CACHE PATH "NTL Library Path")
 
 # Download and Install HElib 2.0
 ExternalProject_Add(
-    build-HElib
-    DEPENDS build-ntl
+	build-HElib
+	DEPENDS build-ntl
 	GIT_REPOSITORY https://github.com/simjunjie/HElib.git
 	CMAKE_ARGS -DNTL_DIR=${NTL_ROOT_DIR} -DGMP_DIR=${GMP_ROOT_DIR} -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED=ON -DENABLE_THREADS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DPEDANTIC_BUILD=OFF
 )
