@@ -28,11 +28,11 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 	include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-# Download and Install GMP
+# Download and Install GMP 6.2.1
 ExternalProject_Add(
 	build-gmp
 	PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-	URL https://ftp.gnu.org/gnu/gmp/gmp-6.2.0.tar.lz # version6.2.0
+	URL https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.lz
 	CONFIGURE_COMMAND sh -c "./configure --prefix=<INSTALL_DIR>"
 	BUILD_IN_SOURCE 1
 )
